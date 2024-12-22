@@ -2,7 +2,8 @@ from tensorflow.keras import layers, models
 from wandb.integration.keras import WandbCallback
 from tensorflow.keras.callbacks import ModelCheckpoint
 import wandb
-from huggingface_hub import HfApi, HfFolder
+from huggingface_hub import HfApi, HfFolder, login
+import os
 
 def build_cnn_model(input_shape, num_classes):
     """
@@ -44,7 +45,7 @@ def train_model(X_train, y_train, X_test, y_test, num_classes, project_name, ent
     )
     
     # Simpan model
-    model_path = "trashnet_model"
+    model_path = "trashnet_model.keras"  # Simpan model sebagai file .keras
     cnn_model.save(model_path)
     print(f"Model disimpan di {model_path}")
     
@@ -55,19 +56,22 @@ def upload_to_huggingface(model_path, repo_id, hf_token):
     Fungsi untuk mengunggah model ke Hugging Face Hub.
     """
     api = HfApi()
+
+    # Mengunggah model ke Hugging Face Hub
     api.upload_folder(
-        folder_path=model_path,
-        repo_id=repo_id,
-        token=hf_token
+        folder_path=model_path,  # Folder tempat model disimpan
+        repo_id=repo_id,  # ID repository Hugging Face
+        token=hf_token  # Token Hugging Face
     )
     print(f"Model berhasil diunggah ke Hugging Face Hub: {repo_id}")
 
-# Contoh penggunaan fungsi
+login("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")
+
+# penggunaan fungsi
 if __name__ == "__main__":
     import numpy as np
     from tensorflow.keras.utils import to_categorical
     
-    # Contoh data dummy (ganti dengan data sebenarnya)
     input_shape = (224, 224, 3)
     num_classes = 6
     X_train = np.random.rand(100, 224, 224, 3)
@@ -77,13 +81,12 @@ if __name__ == "__main__":
     
     # Inisialisasi parameter
     project_name = "trashnet-classification"
-    entity_name = "sellyymus"  # Ganti dengan username Wandb Anda
-    repo_id = "username/trash-classification"  # Ganti dengan repository Hugging Face Anda
-    hf_token = "9e0e4a9ebaefa4f8d16f56ed9bccd52164faf4c9"  # Ganti dengan token API Hugging Face Anda
+    entity_name = "sellyymus"  # username Wandb
+    repo_id = "sellyymust/trash-classification"  # repository Hugging Face
+    hf_token = os.getenv("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")  # token API Hugging Face
     
     # Latih model
     model, history, model_path = train_model(X_train, y_train, X_test, y_test, num_classes, project_name, entity_name)
     
     # Unggah model ke Hugging Face Hub
     upload_to_huggingface(model_path, repo_id, hf_token)
- 
