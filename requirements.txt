@@ -1,1 +1,11 @@
+<<<<<<< HEAD
  
+=======
+tensorflow
+datasets
+numpy
+matplotlib
+seaborn
+wandb
+huggingface_hub
+>>>>>>> 4d5d1108f3541270972aa0906be806f38382d717
