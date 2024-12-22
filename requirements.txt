@@ -1,0 +1,7 @@
+tensorflow
+datasets
+numpy
+matplotlib
+seaborn
+wandb
+huggingface_hub
